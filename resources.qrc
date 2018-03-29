@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/plugins/gvdigitizingtools" >
+        <file>icon.png</file>
+        <file>icons/iconSettings.png</file>
+        <file>icons/iconSnap.png</file>
+        <file>icons/iconPolygonize.png</file>
+        <file>icons/iconDrawArc.png</file>
+        <file>icons/iconExtend.png</file>
+        <file>icons/iconFillet.png</file>
+        <file>icons/iconMirror.png</file>
+        <file>icons/iconScale.png</file>
+        <file>icons/iconTrim.png</file>
+        <file>icons/iconIntersect.png</file>
+        <file>icons/iconExplode.png</file>
+        <file>icons/iconMove.png</file>
+        <file>icons/iconCopy.png</file>
+        <file>icons/iconMoveMultipleLayers.png</file>
+        <file>icons/iconParallel.png</file>
+        <file>icons/iconSplit.png</file>
+        <file>icons/iconCenterline.png</file>
+        <file>icons/iconCenterlineAdvanced.png</file>
+        <file>icons/iconCopyMultipleLayers.png</file>
+    </qresource>
+</RCC>
