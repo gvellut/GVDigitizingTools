@@ -183,7 +183,8 @@ class MoveDigitizingMode(QgsMapToolEmitPoint):
             result = self.snap(pos)
                 
             if result != []:
-                self.startPoint = result[0].snappedVertex
+                # copy or error in QGIS 2.18
+                self.startPoint = QgsPoint(result[0].snappedVertex)
             else:
                 self.startPoint = self.toMapCoordinates(e.pos())
                 
@@ -201,7 +202,7 @@ class MoveDigitizingMode(QgsMapToolEmitPoint):
             pos = QPoint(e.pos().x(), e.pos().y())
             result = self.snap(pos)
             if result != []:
-                self.endPoint = result[0].snappedVertex
+                self.endPoint = QgsPoint(result[0].snappedVertex)
             else:
                 self.endPoint = self.toMapCoordinates(e.pos())
                 
@@ -222,7 +223,7 @@ class MoveDigitizingMode(QgsMapToolEmitPoint):
             
         if self.step == 1:
             if result != []:
-                self.endPoint = result[0].snappedVertex
+                self.endPoint = QgsPoint(result[0].snappedVertex)
             else:
                 self.endPoint = self.toMapCoordinates(e.pos())
             self.rubberBandMoveAxis.reset(QGis.Line)
