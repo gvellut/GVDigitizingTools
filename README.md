@@ -30,11 +30,18 @@ This project is a plugin for QGIS 2 that provides custom tools for digitizing:
     - Launch "build.bat" or "build.sh"
 4. The next time QGIS is opened, the plugin should be listed in the "Plugins" > "Manage and install plugin" dialog
 
+# Documentation
+
+Some documentation (not up-to-date) is on: https://gvellut.github.io/GVDigitizingTools/
+
 # Limitations & TODO
 
-- Old project (made for QGIS 2.2)
-- Some of the tools are now provided by QGIS so no longer necessary: Remove them
-- Some workarounds for QGIS bugs may no longer be necessary: Check
+- Old project (made for QGIS 2.2 in 2014)
+- Some of the tools may now be provided by QGIS so no longer necessary
+- Some workarounds for QGIS bugs may no longer be necessary
 - Much cleanup still needs to be performed to remove quite specific assumptions about the .qgs project
+- Cleanup for PEP-8
+- Documentation needs to be updated
+- Release on QGIS plugin registry
 
 
