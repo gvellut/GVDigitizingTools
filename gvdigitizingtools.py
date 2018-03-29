@@ -116,7 +116,9 @@ class GVDigitizingTools:
         self.addActionGroup([self.actionPolygonize, self.actionIntersect, self.actionExplode])
         
         self.ignoreActions = set([self.action, self.actionSettings, self.actionBackgroundSnapping, 
-                                  self.actionMoveMultipleLayers, self.actionCopyMultipleLayers, self.actionParallel])
+                                  self.actionMoveMultipleLayers, self.actionCopyMultipleLayers, 
+                                  self.actionMove, self.actionCopy,
+                                  self.actionParallel])
         self.action.setEnabled(True)
         self.actionMoveMultipleLayers.setEnabled(True)
         self.actionCopyMultipleLayers.setEnabled(True)
@@ -173,7 +175,7 @@ class GVDigitizingTools:
         
         self.maptoolChanged()
         self.checkCurrentLayerIsEditableLineLayer()
-        self.checkIsMultipleMoveOrCopyEnabled()
+        self.checkIsMoveOrCopyEnabled()
         self.checkIsParallelEnabled()
         
 
@@ -238,18 +240,20 @@ class GVDigitizingTools:
         # selectedLayers not yet updated and no event for this (have to use 
         # currentLAyer change event)
         # get stuck when going from multiple to one selection
-        QTimer.singleShot(1, self.checkIsMultipleMoveOrCopyEnabled)
+        QTimer.singleShot(1, self.checkIsMoveOrCopyEnabled)
         
     def editingStarted(self):
         self.checkCurrentLayerIsEditableLineLayer()
         self.checkIsParallelEnabled()
+        self.checkIsMoveOrCopyEnabled()
         
     def editingStopped(self):
         self.checkCurrentLayerIsEditableLineLayer()
         self.checkIsParallelEnabled()
+        self.checkIsMoveOrCopyEnabled()
         
     def selectionChanged(self):
-        self.checkIsMultipleMoveOrCopyEnabled()
+        self.checkIsMoveOrCopyEnabled()
         
     def maptoolChanged(self):
         self.parallelConstraintMode.isRelevant = (self.iface.mapCanvas().mapTool() is not None and 
@@ -258,7 +262,7 @@ class GVDigitizingTools:
     def checkCurrentLayerIsEditableLineLayer(self):
         if self.currentLayer and self.currentLayer.type() == QgsMapLayer.VectorLayer and self.currentLayer.geometryType() == QGis.Line and self.currentLayer.isEditable():
             for action in self.actions:
-                # special processing for MoveMultipleLayers
+                # special processing for some actions (irrelevant or some custom processing)
                 if action not in self.ignoreActions:
                     action.setEnabled(True)
                 
@@ -284,20 +288,41 @@ class GVDigitizingTools:
         else:
             self.actionParallel.setEnabled(False)
 
-    def checkIsMultipleMoveOrCopyEnabled(self):
+    def checkIsMoveOrCopyEnabled(self):
+        """
+        Any type of geometry
+        For Multiple... modes, no need to be editable but needs to have selection
+        """
         layers = self.iface.legendInterface().selectedLayers()
+        isSingleEnabled = False
+        isMultipleEnabled = False
         for layer in layers:
             if layer.type() == QgsMapLayer.VectorLayer:
+                if layer.isEditable():
+                    self.actionMove.setEnabled(True)
+                    self.actionCopy.setEnabled(True)
+                    isSingleEnabled = True
                 if layer.selectedFeatureCount() > 0:
                     self.actionMoveMultipleLayers.setEnabled(True)
                     self.actionCopyMultipleLayers.setEnabled(True)
-                    return
-        self.moveMultipleLayersMode.reset()
-        self.copyMultipleLayersMode.reset()
-        self.actionMoveMultipleLayers.setChecked(False)
-        self.actionMoveMultipleLayers.setEnabled(False)
-        self.actionCopyMultipleLayers.setChecked(False)
-        self.actionCopyMultipleLayers.setEnabled(False)
+                    isMultipleEnabled = True
+                    break
+                    
+        if not isSingleEnabled:
+            self.moveMode.reset()
+            self.copyMode.reset()
+            self.actionMove.setChecked(False)
+            self.actionMove.setEnabled(False)
+            self.actionCopy.setChecked(False)
+            self.actionCopy.setEnabled(False)
+        
+        if not isMultipleEnabled:
+            self.moveMultipleLayersMode.reset()
+            self.copyMultipleLayersMode.reset()
+            self.actionMoveMultipleLayers.setChecked(False)
+            self.actionMoveMultipleLayers.setEnabled(False)
+            self.actionCopyMultipleLayers.setChecked(False)
+            self.actionCopyMultipleLayers.setEnabled(False)
                 
     def setupMode(self):
         layer = self.iface.legendInterface().currentLayer()
